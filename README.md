@@ -6,19 +6,19 @@
 
 ## Instruction on running:
 
-- ###Create venv
-- ###Install pygame
-- ###Run main.py
+- Create venv
+- Install pygame
+- Run main.py
 
 ## What is working at the moment:
-- ###Map gen with single column
-- ###Map gen with double column
-- ### Map can be changed by changing the JSON
+- Map gen with single column
+- Map gen with double column
+- Map can be changed by changing the JSON
 
 ## Roadmap:
-- ###Small enemies to kill for healing
-- ###Item for healing
-- ###HP bar
-- ###Attack menu
-- ###Fighting boss (boss is standing on the screen)
-- ###Menu
+- Small enemies to kill for healing
+- Item for healing
+- HP bar
+- Attack menu
+- Fighting boss (boss is standing on the screen)
+- Menu
