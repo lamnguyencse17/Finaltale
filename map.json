@@ -1,0 +1,52 @@
+[
+  {
+    "type": "continuous",
+    "start_time": 1000,
+    "quantity": 20,
+    "start_scale_x": 0.1,
+    "start_scale_y": 0.1,
+    "end_scale_x": 0.1,
+    "end_scale_y": 0.30,
+    "offset_y": 0,
+    "distance": 30
+  },
+  {
+    "type": "continuous",
+    "start_time": 200,
+    "quantity": 20,
+    "start_scale_x": 0.1,
+    "start_scale_y": 0.30,
+    "end_scale_x": 0.1,
+    "end_scale_y": 0.30,
+    "offset_y": 25,
+    "distance": 30
+  },
+  {
+    "type": "continuous",
+    "start_time": 100,
+    "quantity": 20,
+    "start_scale_x": 0.1,
+    "start_scale_y": 0.2,
+    "end_scale_x": 0.1,
+    "end_scale_y": 0.2,
+    "offset_y": -25,
+    "distance": 30
+  }
+,
+  {
+    "type": "double",
+    "start_time": 100,
+    "quantity": 20,
+    "distance": 30,
+    "heart_start_offset": 80,
+    "heart_end_offset": 150
+  },
+  {
+    "type": "double",
+    "start_time": 10,
+    "quantity": 20,
+    "distance": 30,
+    "heart_start_offset": 150,
+    "heart_end_offset": 80
+  }
+]
