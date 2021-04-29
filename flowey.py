@@ -3,14 +3,15 @@ import sys
 
 import pygame as pg
 
-speed = 1
+import config
 
 
 class Flowey(pg.sprite.Sprite):
 
-    def __init__(self, pos, center, heart_size):
-        global speed
+    def __init__(self, pos):
         super().__init__()
+        # game_controller = controller.getGameController()
+        center = config.screen_center
         self.image = pg.image.load('flowey.png').convert_alpha()
         self.image_size = (int(self.image.get_width() * 0.05), int(self.image.get_height() * 0.05))
         self.image = pg.transform.scale(self.image, self.image_size)
@@ -19,11 +20,10 @@ class Flowey(pg.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
         self.id = int.from_bytes(os.urandom(2), sys.byteorder)
         self.tick = 0
-        self.speed = speed
         self.collided = False
         self.border_top_left = (center[0] - 400, center[1] + 100)
-        self.heart_size = heart_size
-        self.__calculate_offset_based_on_speed(speed)
+        self.heart_size = config.heart_size
+        self.__calculate_offset_based_on_speed()
 
     def __check_collision(self):
         if self.collided:
@@ -48,8 +48,8 @@ class Flowey(pg.sprite.Sprite):
             return True
         return False
 
-    def __calculate_offset_based_on_speed(self, speed):
-        self.offset = 800 / (speed * 120)
+    def __calculate_offset_based_on_speed(self):
+        self.offset = 800 / (config.speed * 120)
 
     def update(self):
         if self.is_outside:
@@ -58,4 +58,3 @@ class Flowey(pg.sprite.Sprite):
         if self.__is_at_left_border():
             self.kill()
         self.rect = self.rect.move(-self.offset, 0)
-        self.__calculate_offset_based_on_speed(self.speed)

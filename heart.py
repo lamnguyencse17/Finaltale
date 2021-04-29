@@ -1,11 +1,19 @@
 import pygame as pg
 
+heart_image: pg.Surface = None
+
+
+def load_heart_image():
+    global heart_image
+    heart_image = pg.image.load('heart.png').convert_alpha()
+
 
 class Heart(pg.sprite.Sprite):
 
     def __init__(self, pos):
         super().__init__()
-        self.image = pg.image.load('heart.png').convert_alpha()
+        global heart_image
+        self.image = heart_image.copy()
         self.image_size = (int(self.image.get_width() * 0.1), int(self.image.get_height() * 0.1))
         self.image = pg.transform.scale(self.image, self.image_size)
         self.rect = self.image.get_rect(center=(pos[0], pos[1]))
