@@ -15,7 +15,7 @@ def load_bone_image():
 
 class Bone(pg.sprite.Sprite):
 
-    def __init__(self, pos, scale, center, heart_size):
+    def __init__(self, pos, scale):
         global bone_image
         super().__init__()
         self.image = bone_image.copy()
@@ -27,8 +27,9 @@ class Bone(pg.sprite.Sprite):
         self.id = int.from_bytes(os.urandom(2), sys.byteorder)
         self.tick = 0
         self.collided = False
-        self.heart_size = heart_size
+        self.heart_size = config.heart_size
         self.__calculate_offset_based_on_speed()
+        center = config.screen_center
         self.border_top_left = (center[0] - 400, center[1] + 100)
 
     def __calculate_offset_based_on_speed(self):

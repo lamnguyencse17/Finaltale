@@ -1,5 +1,8 @@
 from typing import Tuple
 
+import pygame as pg
+
+import bone
 import player
 
 
@@ -9,6 +12,23 @@ class Controller:
         self.scene = 1
         self.__is_running = True
         self.screen_center = None
+        self.__is_at_main_menu = False
+        self.__is_in_game = False
+        self.__is_in_pause_state = False
+        self.allow_new_render = False
+        self.__last_sprite: bone.Bone = None
+
+    def set_last_sprite(self, sprite: pg.sprite.Sprite):
+        self.__last_sprite = sprite
+
+    def get_last_sprite(self):
+        return self.__last_sprite
+
+    def allow_render(self):
+        self.allow_new_render = True
+
+    def block_render(self):
+        self.allow_new_render = False
 
     def quit(self):
         self.__is_running = False
@@ -25,15 +45,29 @@ class Controller:
     def get_screen_center(self):
         return self.screen_center
 
+    def display_main_menu(self):
+        self.__is_at_main_menu = True
+        self.__is_in_game = False
+
+    def display_game(self):
+        self.__is_at_main_menu = False
+        self.__is_in_game = True
+
+    def unpause_game(self):
+        self.__is_in_pause_state = False
+
+    def pause_game(self):
+        self.__is_in_pause_state = True
+
 
 game_controller: Controller = None
 
 
-def initGameController():
+def init_game_controller():
     global game_controller
     game_controller = Controller()
 
 
-def getGameController():
+def get_game_controller():
     global game_controller
     return game_controller
