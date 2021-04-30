@@ -12,7 +12,7 @@ class Controller:
         self.scene = 1
         self.__is_running = True
         self.screen_center = None
-        self.__is_at_main_menu = False
+        self.__is_at_main_menu = True
         self.__is_in_game = False
         self.__is_in_pause_state = False
         self.allow_new_render = False
@@ -35,6 +35,12 @@ class Controller:
 
     def is_game_running(self):
         return self.__is_running
+
+    def is_in_game(self):
+        return self.__is_in_game
+
+    def is_at_main_menu(self):
+        return self.__is_at_main_menu
 
     def get_player(self):
         return self.__player

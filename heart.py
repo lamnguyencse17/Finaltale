@@ -1,5 +1,7 @@
 import pygame as pg
 
+import controller
+
 heart_image: pg.Surface = None
 
 
@@ -26,7 +28,12 @@ class Heart(pg.sprite.Sprite):
         self.last_mouse_movement = [mouse_x, mouse_y]
 
     def __set_heart_position(self, pos_x, pos_y):
+        game_controller = controller.get_game_controller()
         center_adjustment = [pos_x - self.image_size[0] / 2, pos_y - self.image_size[1] / 2]
+        if game_controller.is_at_main_menu():
+            self.rect.x = center_adjustment[0]
+            self.rect.y = center_adjustment[1]
+            return
         if center_adjustment[1] < self.border_top_left[1] + 5:
             center_adjustment[1] = self.border_top_left[1] + 5
         elif center_adjustment[1] + self.image_size[1] > self.border_top_left[1] + 200 - 5:

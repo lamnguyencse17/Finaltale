@@ -9,6 +9,7 @@ import config
 import controller
 import generator
 import heart
+import main_menu
 import music
 import sans
 from sprites_group import obstacles_group, character_group, gameplay_group, misc_group, pause_menu_group
@@ -76,13 +77,13 @@ def key_handling(key: int):
     if key == pg.K_ESCAPE:
         if game_controller.is_paused():
             game_controller.unpause_game()
-            music.unpause_menu_bgm()
+            music.unpause_music()
         else:
             pause_menu_sprite = pause_menu.Menu()
             pause_menu_group.add(pause_menu_sprite)
             pause_menu_group.update()
             game_controller.pause_game()
-            music.pause_menu_bgm()
+            music.pause_music()
 
 
 def click_handling():
@@ -92,9 +93,42 @@ def click_handling():
         if pause_menu_sprite.is_clicked_on_resume():
             print("RESUME")
             game_controller.unpause_game()
-            music.unpause_menu_bgm()
+            music.unpause_music()
         if pause_menu_sprite.is_clicked_on_quit():
-            print("QUIT")
+            game_controller.quit()
+    if game_controller.is_at_main_menu():
+        print("AT MAIN MENU")
+        main_menu_sprite: main_menu.Menu = misc_group.sprites()[1]
+        if main_menu_sprite.is_play_title_clicked():
+            game_controller.display_game()
+            pg.event.post(event_store.event["IN_GAME"])
+
+
+def load_in_game(screen_center: Tuple[int, int]):
+    spec.load_specs()
+
+    sans_sprite = sans.Sans((screen_center[0], screen_center[1] - 100))
+    border_sprite = border.Border(screen_center)
+
+    generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
+    character_group.add(sans_sprite)
+    misc_group.add(border_sprite)
+
+    character_group.update()
+    misc_group.update()
+
+
+def load_main_menu(screen_center: Tuple[int, int]):
+    heart_sprite = heart.Heart(screen_center)
+    title_sprite = title.Title(screen_center)
+    main_menu_sprite = main_menu.Menu()
+
+    gameplay_group.add(heart_sprite)
+    misc_group.add(title_sprite)
+    misc_group.add(main_menu_sprite)
+
+    gameplay_group.update()
+    misc_group.update()
 
 
 def main():
@@ -105,7 +139,7 @@ def main():
 
     controller.init_game_controller()
     game_controller = controller.get_game_controller()
-
+    game_controller.display_main_menu()
     clock = pg.time.Clock()
     game_clock = internal_clock.Clock()
     game_clock.start_counting_action_tick()
@@ -113,36 +147,14 @@ def main():
     screen = pg.display.set_mode((1280, 720))
     screen_center = (screen.get_width() / 2, screen.get_height() / 2)
 
-    pg.display.flip()
     load_config(screen_center)
     map_event()
-    spec.load_specs()
+    load_main_menu(screen_center)
 
-    sans_sprite = sans.Sans((screen_center[0], screen_center[1] - 100))
-    heart_sprite = heart.Heart(screen_center)
-    border_sprite = border.Border(screen_center)
-    title_sprite = title.Title(screen_center)
-
-    character_group.add(sans_sprite)
-
-    gameplay_group.add(heart_sprite)
-    generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
-
-    misc_group.add(border_sprite)
-    misc_group.add(title_sprite)
-
-    character_group.update()
-    gameplay_group.update()
-    misc_group.update()
+    pg.display.flip()
 
     while game_controller.is_game_running():
         screen.fill(BLACK)
-        if game_controller.is_game_running() and not game_controller.is_paused():
-            misc_group.draw(screen)
-            character_group.draw(screen)
-            obstacles_group.draw(screen)
-            gameplay_group.draw(screen)
-
         events = pg.event.get()
 
         for event in events:
@@ -152,21 +164,37 @@ def main():
                 click_handling()
             if event.type == pg.QUIT:
                 game_controller.quit()
+            if event.type == event_store.event["IN_GAME"]:
+                load_in_game(screen_center)
             if event.type == event_store.event["LOAD_BONE"]:
                 generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
-        if game_controller.is_game_running() and not game_controller.is_paused():
-            character_group.update()
-            obstacles_group.update()
+        if game_controller.is_at_main_menu():
+            misc_group.draw(screen)
+            gameplay_group.draw(screen)
+
             gameplay_group.update()
             misc_group.update()
-            check_for_collision()
-            prep_for_new_render()
-            if spec.specs_index == spec.get_specs_length() - 1 and len(obstacles_group.sprites()) == 0:
-                spec.reset_spec_index()
-                game_controller.allow_render()
-                generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
-        if game_controller.is_paused():
-            pause_menu_group.draw(screen)
+
+        if game_controller.is_in_game() and not game_controller.is_paused():
+            if game_controller.is_paused():
+                pause_menu_group.draw(screen)
+            else:
+                misc_group.draw(screen)
+                character_group.draw(screen)
+                obstacles_group.draw(screen)
+                gameplay_group.draw(screen)
+
+                character_group.update()
+                obstacles_group.update()
+                gameplay_group.update()
+                misc_group.update()
+                check_for_collision()
+                prep_for_new_render()
+                if spec.specs_index == spec.get_specs_length() - 1 and len(obstacles_group.sprites()) == 0:
+                    spec.reset_spec_index()
+                    game_controller.allow_render()
+                    generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
+
         pg.display.update()
         game_clock.inc_tick()
         clock.tick(120)

@@ -29,7 +29,7 @@ class Menu(pg.sprite.Sprite):
         quit_title = self.font.render('QUIT', True, (255, 0, 0))
         quit_title_pos = (int(center[0] - quit_title.get_width() / 2), center[1])
         self.image.blit(quit_title, quit_title_pos)
-        self.quit_title_rect = menu_title.get_rect(
+        self.quit_title_rect = quit_title.get_rect(
             center=[quit_title_pos[0] + quit_title.get_width() / 2, quit_title_pos[1]])
 
     def is_clicked_on_resume(self):

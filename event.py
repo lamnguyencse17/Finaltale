@@ -9,7 +9,7 @@ class Event:
 
     def define_event(self, name):
         global current_inc
-        self.event[name] = pg.USEREVENT + current_inc
+        self.event[name] = pg.event.Event(pg.USEREVENT + current_inc)
         current_inc += 1
 
 
