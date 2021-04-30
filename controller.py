@@ -59,6 +59,9 @@ class Controller:
     def pause_game(self):
         self.__is_in_pause_state = True
 
+    def is_paused(self):
+        return self.__is_in_pause_state
+
 
 game_controller: Controller = None
 
