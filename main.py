@@ -4,19 +4,19 @@ import pygame as pg
 
 import bone
 import border
-import clock as internal_clock
 import config
 import controller
 import generator
+import health_bar
 import heart
 import main_menu
 import music
-import sans
-from sprites_group import obstacles_group, character_group, gameplay_group, misc_group, pause_menu_group
-import title
-from spec import spec
-from event import event as event_store
 import pause_menu
+import sans
+import title
+from event import event as event_store
+from spec import spec
+from sprites_group import obstacles_group, character_group, gameplay_group, misc_group, pause_menu_group
 
 BLACK = (0, 0, 0)
 collision_list = []
@@ -112,12 +112,17 @@ def load_in_game(screen_center: Tuple[int, int]):
     spec.load_specs()
     game_controller = controller.get_game_controller()
     game_controller.game_loaded = True
+
     sans_sprite = sans.Sans((screen_center[0], screen_center[1] - 100))
     border_sprite = border.Border(screen_center)
+    health_bar_sprite = health_bar.Bar()
     generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
+
     character_group.add(sans_sprite)
     misc_group.add(border_sprite)
+    gameplay_group.add(health_bar_sprite)
 
+    gameplay_group.update()
     character_group.update()
     misc_group.update()
     game_controller.display_game()

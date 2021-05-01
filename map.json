@@ -31,8 +31,7 @@
     "end_scale_y": 0.2,
     "offset_y": -25,
     "distance": 30
-  }
-,
+  },
   {
     "type": "double",
     "start_time": 100,

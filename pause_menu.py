@@ -1,8 +1,4 @@
-import os
-import sys
-
 import pygame as pg
-import config
 
 
 class Menu(pg.sprite.Sprite):
