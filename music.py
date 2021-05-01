@@ -7,6 +7,7 @@ def play_menu_bgm():
 
 
 def play_ingame_music():
+    pg.mixer.music.unload()
     pg.mixer.music.load("game_bgm.mp3")
     pg.mixer.music.play()
 

@@ -24,6 +24,7 @@ class Bone(pg.sprite.Sprite):
         self.is_outside = True
         self.true_image = self.image
         self.rect = self.image.get_rect(center=pos)
+        self.image = pg.Surface((1, 1))
         self.id = int.from_bytes(os.urandom(2), sys.byteorder)
         self.tick = 0
         self.collided = False

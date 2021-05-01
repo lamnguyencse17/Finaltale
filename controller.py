@@ -17,6 +17,7 @@ class Controller:
         self.__is_in_pause_state = False
         self.allow_new_render = False
         self.__last_sprite: bone.Bone = None
+        self.game_loaded = False
 
     def set_last_sprite(self, sprite: pg.sprite.Sprite):
         self.__last_sprite = sprite

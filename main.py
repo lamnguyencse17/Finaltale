@@ -30,7 +30,7 @@ def prep_for_new_render():
         return
     if last_sprite.is_outside:
         return
-    pg.time.set_timer(event_store.event["LOAD_BONE"], spec.current_specs["start_time"], True)
+    pg.time.set_timer(event_store.event["LOAD_BONE"]["object"], spec.current_specs["start_time"], True)
     game_controller.block_render()
 
 
@@ -97,28 +97,34 @@ def click_handling():
         if pause_menu_sprite.is_clicked_on_quit():
             game_controller.quit()
     if game_controller.is_at_main_menu():
-        print("AT MAIN MENU")
         main_menu_sprite: main_menu.Menu = misc_group.sprites()[1]
         if main_menu_sprite.is_play_title_clicked():
             game_controller.display_game()
-            pg.event.post(event_store.event["IN_GAME"])
+            pg.event.post(event_store.event["IN_GAME"]["object"])
+        if main_menu_sprite.is_quit_title_clicked():
+            game_controller.quit()
+        if main_menu_sprite.is_option_title_clicked():
+            print("OPTION")
 
 
 def load_in_game(screen_center: Tuple[int, int]):
+    music.play_ingame_music()
     spec.load_specs()
-
+    game_controller = controller.get_game_controller()
+    game_controller.game_loaded = True
     sans_sprite = sans.Sans((screen_center[0], screen_center[1] - 100))
     border_sprite = border.Border(screen_center)
-
     generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
     character_group.add(sans_sprite)
     misc_group.add(border_sprite)
 
     character_group.update()
     misc_group.update()
+    game_controller.display_game()
 
 
 def load_main_menu(screen_center: Tuple[int, int]):
+    music.play_menu_bgm()
     heart_sprite = heart.Heart(screen_center)
     title_sprite = title.Title(screen_center)
     main_menu_sprite = main_menu.Menu()
@@ -131,26 +137,26 @@ def load_main_menu(screen_center: Tuple[int, int]):
     misc_group.update()
 
 
-def main():
+def init_game():
     pg.init()
     pg.font.init()
     pg.display.set_caption("Final Tale")
-    music.play_menu_bgm()
-
     controller.init_game_controller()
+    screen = pg.display.set_mode((1280, 720))
+    clock = pg.time.Clock()
+    return screen, clock
+
+
+def main():
+    screen, clock = init_game()
     game_controller = controller.get_game_controller()
     game_controller.display_main_menu()
-    clock = pg.time.Clock()
-    game_clock = internal_clock.Clock()
-    game_clock.start_counting_action_tick()
 
-    screen = pg.display.set_mode((1280, 720))
     screen_center = (screen.get_width() / 2, screen.get_height() / 2)
 
     load_config(screen_center)
     map_event()
     load_main_menu(screen_center)
-
     pg.display.flip()
 
     while game_controller.is_game_running():
@@ -164,9 +170,9 @@ def main():
                 click_handling()
             if event.type == pg.QUIT:
                 game_controller.quit()
-            if event.type == event_store.event["IN_GAME"]:
+            if event.type == event_store.event["IN_GAME"]["value"]:
                 load_in_game(screen_center)
-            if event.type == event_store.event["LOAD_BONE"]:
+            if event.type == event_store.event["LOAD_BONE"]["value"]:
                 generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
         if game_controller.is_at_main_menu():
             misc_group.draw(screen)
@@ -174,8 +180,7 @@ def main():
 
             gameplay_group.update()
             misc_group.update()
-
-        if game_controller.is_in_game() and not game_controller.is_paused():
+        if game_controller.game_loaded and game_controller.is_in_game():
             if game_controller.is_paused():
                 pause_menu_group.draw(screen)
             else:
@@ -196,7 +201,6 @@ def main():
                     generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
 
         pg.display.update()
-        game_clock.inc_tick()
         clock.tick(120)
 
 
