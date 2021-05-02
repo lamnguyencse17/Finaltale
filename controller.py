@@ -18,6 +18,7 @@ class Controller:
         self.allow_new_render = False
         self.__last_sprite: bone.Bone = None
         self.game_loaded = False
+        self.__is_at_option_menu = False
 
     def set_last_sprite(self, sprite: pg.sprite.Sprite):
         self.__last_sprite = sprite
@@ -55,10 +56,17 @@ class Controller:
     def display_main_menu(self):
         self.__is_at_main_menu = True
         self.__is_in_game = False
+        self.__is_at_option_menu = False
+
+    def display_option_menu(self):
+        self.__is_at_main_menu = False
+        self.__is_at_option_menu = True
+        self.__is_in_game = False
 
     def display_game(self):
         self.__is_at_main_menu = False
         self.__is_in_game = True
+        self.__is_at_option_menu = False
 
     def unpause_game(self):
         self.__is_in_pause_state = False
@@ -68,6 +76,9 @@ class Controller:
 
     def is_paused(self):
         return self.__is_in_pause_state
+
+    def is_at_option_menu(self):
+        return self.__is_at_option_menu
 
 
 game_controller: Controller = None

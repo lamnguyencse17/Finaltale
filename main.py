@@ -11,6 +11,7 @@ import health_bar
 import heart
 import main_menu
 import music
+import option
 import pause_menu
 import sans
 import title
@@ -65,6 +66,7 @@ def load_config(screen_center: Tuple[int, int]):
 def map_event():
     event_store.define_event("START_GAME")
     event_store.define_event("MAIN_MENU")
+    event_store.define_event("OPTION_MENU")
     event_store.define_event("IN_GAME")
     event_store.define_event("END_GAME")
     event_store.define_event("PAUSE")
@@ -91,7 +93,6 @@ def click_handling():
     if game_controller.is_paused():
         pause_menu_sprite: pause_menu.Menu = pause_menu_group.sprites()[0]
         if pause_menu_sprite.is_clicked_on_resume():
-            print("RESUME")
             game_controller.unpause_game()
             music.unpause_music()
         if pause_menu_sprite.is_clicked_on_quit():
@@ -104,7 +105,26 @@ def click_handling():
         if main_menu_sprite.is_quit_title_clicked():
             game_controller.quit()
         if main_menu_sprite.is_option_title_clicked():
-            print("OPTION")
+            pg.event.post(event_store.event["OPTION_MENU"]["object"])
+    if game_controller.is_at_option_menu():
+        option_menu_sprite: option.Menu = misc_group.sprites()[0]
+        if option_menu_sprite.is_clicked_on_bgm():
+            music.toggle_bgm()
+            config.toggle_bgm()
+        if option_menu_sprite.is_clicked_on_sfx():
+            config.toggle_sfx()
+        if option_menu_sprite.is_clicked_on_back():
+            game_controller.display_main_menu()
+            load_main_menu(config.screen_center)
+
+
+def load_option_menu():
+    game_controller = controller.get_game_controller()
+    game_controller.display_option_menu()
+    misc_group.empty()
+    option_menu_sprite = option.Menu()
+    misc_group.add(option_menu_sprite)
+    misc_group.update()
 
 
 def load_in_game(screen_center: Tuple[int, int]):
@@ -129,6 +149,8 @@ def load_in_game(screen_center: Tuple[int, int]):
 
 
 def load_main_menu(screen_center: Tuple[int, int]):
+    misc_group.empty()
+    misc_group.update()
     music.play_menu_bgm()
     heart_sprite = heart.Heart(screen_center)
     title_sprite = title.Title(screen_center)
@@ -179,7 +201,9 @@ def main():
                 load_in_game(screen_center)
             if event.type == event_store.event["LOAD_BONE"]["value"]:
                 generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
-        if game_controller.is_at_main_menu():
+            if event.type == event_store.event["OPTION_MENU"]["value"]:
+                load_option_menu()
+        if game_controller.is_at_main_menu() or game_controller.is_at_option_menu():
             misc_group.draw(screen)
             gameplay_group.draw(screen)
 

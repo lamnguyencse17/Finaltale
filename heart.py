@@ -30,7 +30,7 @@ class Heart(pg.sprite.Sprite):
     def __set_heart_position(self, pos_x, pos_y):
         game_controller = controller.get_game_controller()
         center_adjustment = [pos_x - self.image_size[0] / 2, pos_y - self.image_size[1] / 2]
-        if game_controller.is_at_main_menu():
+        if game_controller.is_at_main_menu() or game_controller.is_at_option_menu():
             self.rect.x = center_adjustment[0]
             self.rect.y = center_adjustment[1]
             return
