@@ -12,7 +12,7 @@ class Flowey(pg.sprite.Sprite):
         super().__init__()
         # game_controller = controller.getGameController()
         center = config.screen_center
-        self.image = pg.image.load('flowey.png').convert_alpha()
+        self.image = pg.image.load('./res/image/flowey.png').convert_alpha()
         self.image_size = (int(self.image.get_width() * 0.05), int(self.image.get_height() * 0.05))
         self.image = pg.transform.scale(self.image, self.image_size)
         self.is_outside = True

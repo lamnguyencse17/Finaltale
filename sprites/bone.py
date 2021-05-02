@@ -10,7 +10,7 @@ bone_image: pg.Surface = None
 
 def load_bone_image():
     global bone_image
-    bone_image = pg.image.load('bone.png').convert_alpha()
+    bone_image = pg.image.load('./res/image/bone.png').convert_alpha()
 
 
 class Bone(pg.sprite.Sprite):

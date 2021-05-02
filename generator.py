@@ -2,12 +2,11 @@ from typing import Tuple
 
 import pygame as pg
 
-import bone
 import config
 import controller
-import main
 import sprites_group
 from spec import spec
+from sprites import bone
 
 
 def continuous_bone_generator(current_specs, total_sprite, start_pos):
@@ -80,7 +79,7 @@ def generate_sprites(start_pos: Tuple[int, int]):
     game_controller.set_last_sprite(last_sprite)
     if spec.get_specs_length() == spec.specs_index + 1:
         pg.event.clear()
-        main.allow_new_render = False
+        game_controller.block_render()
         return
     spec.increment_spec_index()
     game_controller.allow_render()

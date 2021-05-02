@@ -2,21 +2,20 @@ from typing import Tuple
 
 import pygame as pg
 
-import bone
-import border
 import config
 import controller
 import generator
-import health_bar
 import heart
 import main_menu
 import music
 import option
 import pause_menu
-import sans
-import title
 from event import event as event_store
+from loaders.load_in_game import load_in_game
+from loaders.load_main_menu import load_main_menu
+from loaders.load_option_menu import load_option_menu
 from spec import spec
+from sprites import bone
 from sprites_group import obstacles_group, character_group, gameplay_group, misc_group, pause_menu_group
 
 BLACK = (0, 0, 0)
@@ -72,6 +71,7 @@ def map_event():
     event_store.define_event("PAUSE")
     event_store.define_event("UNPAUSE")
     event_store.define_event("LOAD_BONE")
+    event_store.define_event("ATTACK_SANS")
 
 
 def key_handling(key: int):
@@ -116,52 +116,6 @@ def click_handling():
         if option_menu_sprite.is_clicked_on_back():
             game_controller.display_main_menu()
             load_main_menu(config.screen_center)
-
-
-def load_option_menu():
-    game_controller = controller.get_game_controller()
-    game_controller.display_option_menu()
-    misc_group.empty()
-    option_menu_sprite = option.Menu()
-    misc_group.add(option_menu_sprite)
-    misc_group.update()
-
-
-def load_in_game(screen_center: Tuple[int, int]):
-    music.play_ingame_music()
-    spec.load_specs()
-    game_controller = controller.get_game_controller()
-    game_controller.game_loaded = True
-
-    sans_sprite = sans.Sans((screen_center[0], screen_center[1] - 100))
-    border_sprite = border.Border(screen_center)
-    health_bar_sprite = health_bar.Bar()
-    generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
-
-    character_group.add(sans_sprite)
-    misc_group.add(border_sprite)
-    gameplay_group.add(health_bar_sprite)
-
-    gameplay_group.update()
-    character_group.update()
-    misc_group.update()
-    game_controller.display_game()
-
-
-def load_main_menu(screen_center: Tuple[int, int]):
-    misc_group.empty()
-    misc_group.update()
-    music.play_menu_bgm()
-    heart_sprite = heart.Heart(screen_center)
-    title_sprite = title.Title(screen_center)
-    main_menu_sprite = main_menu.Menu()
-
-    gameplay_group.add(heart_sprite)
-    misc_group.add(title_sprite)
-    misc_group.add(main_menu_sprite)
-
-    gameplay_group.update()
-    misc_group.update()
 
 
 def init_game():

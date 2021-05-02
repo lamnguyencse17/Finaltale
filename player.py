@@ -7,3 +7,6 @@ class Player:
 
     def decrement_health(self):
         self.__health -= 1
+
+    def attack(self):
+        pass

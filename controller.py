@@ -2,8 +2,8 @@ from typing import Tuple
 
 import pygame as pg
 
-import bone
 import player
+from sprites import bone
 
 
 class Controller:
