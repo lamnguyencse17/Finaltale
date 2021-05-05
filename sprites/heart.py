@@ -7,7 +7,7 @@ heart_image: pg.Surface = None
 
 def load_heart_image():
     global heart_image
-    heart_image = pg.image.load('heart.png').convert_alpha()
+    heart_image = pg.image.load('./res/image/heart.png').convert_alpha()
 
 
 class Heart(pg.sprite.Sprite):

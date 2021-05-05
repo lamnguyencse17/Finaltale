@@ -5,7 +5,6 @@ import pygame as pg
 import config
 import controller
 import generator
-import heart
 import main_menu
 import music
 import option
@@ -15,7 +14,7 @@ from loaders.load_in_game import load_in_game
 from loaders.load_main_menu import load_main_menu
 from loaders.load_option_menu import load_option_menu
 from spec import spec
-from sprites import bone
+from sprites import bone, heart
 from sprites_group import obstacles_group, character_group, gameplay_group, misc_group, pause_menu_group
 
 BLACK = (0, 0, 0)
@@ -72,6 +71,7 @@ def map_event():
     event_store.define_event("UNPAUSE")
     event_store.define_event("LOAD_BONE")
     event_store.define_event("ATTACK_SANS")
+    event_store.define_event("ALLOW_NEW_CLOUD")
 
 
 def key_handling(key: int):
@@ -157,10 +157,11 @@ def main():
                 generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
             if event.type == event_store.event["OPTION_MENU"]["value"]:
                 load_option_menu()
+            if event.type == event_store.event["ALLOW_NEW_CLOUD"]["value"]:
+                game_controller.allow_new_cloud()
         if game_controller.is_at_main_menu() or game_controller.is_at_option_menu():
             misc_group.draw(screen)
             gameplay_group.draw(screen)
-
             gameplay_group.update()
             misc_group.update()
         if game_controller.game_loaded and game_controller.is_in_game():
@@ -168,10 +169,11 @@ def main():
                 pause_menu_group.draw(screen)
             else:
                 misc_group.draw(screen)
+                if game_controller.is_new_cloud_allowed():
+                    generator.gen_cloud()
                 character_group.draw(screen)
                 obstacles_group.draw(screen)
                 gameplay_group.draw(screen)
-
                 character_group.update()
                 obstacles_group.update()
                 gameplay_group.update()

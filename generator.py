@@ -1,3 +1,4 @@
+import random
 from typing import Tuple
 
 import pygame as pg
@@ -5,8 +6,10 @@ import pygame as pg
 import config
 import controller
 import sprites_group
+from event import event as event_store
 from spec import spec
-from sprites import bone
+from sprites import bone, cloud
+from sprites_group import misc_group
 
 
 def continuous_bone_generator(current_specs, total_sprite, start_pos):
@@ -84,3 +87,13 @@ def generate_sprites(start_pos: Tuple[int, int]):
     spec.increment_spec_index()
     game_controller.allow_render()
     print("READY FOR NEXT RENDER")
+
+
+def gen_cloud():
+    center = config.screen_center
+    game_controller = controller.get_game_controller()
+    y_offset = random.randint(200, 300)
+    cloud_sprite = cloud.Cloud((center[0] + 300, center[1] + y_offset))
+    misc_group.add(cloud_sprite)
+    game_controller.block_new_cloud()
+    pg.time.set_timer(event_store.event["ALLOW_NEW_CLOUD"]["object"], 3000, True)

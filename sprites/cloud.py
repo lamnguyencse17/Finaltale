@@ -1,0 +1,51 @@
+import os
+import sys
+
+import pygame as pg
+
+import config
+
+
+class Cloud(pg.sprite.Sprite):
+
+    def __init__(self, pos):
+        super().__init__()
+        # game_controller = controller.getGameController()
+        center = config.screen_center
+        self.image = pg.image.load('./res/image/cloud.png').convert_alpha()
+        self.image_size = (int(self.image.get_width() * 0.3), int(self.image.get_height() * 0.3))
+        self.image = pg.transform.scale(self.image, self.image_size)
+        self.is_outside = True
+        self.true_image = self.image
+        self.rect = self.image.get_rect(center=pos)
+        self.id = int.from_bytes(os.urandom(2), sys.byteorder)
+        self.tick = 0
+        self.collided = False
+        self.border_top_left = (center[0] - 400, center[1] + 100)
+        self.heart_size = config.heart_size
+        self.__calculate_offset_based_on_speed()
+
+    def __is_outside_right_border(self):
+        pos = [self.rect.centerx + self.image_size[0] / 2, self.rect.centerx + self.image_size[1] / 2]
+        if pos[0] > self.border_top_left[0] + 800:
+            self.image = pg.Surface((1, 1))
+            return True
+        self.image = self.true_image
+        self.is_outside = False
+        return False
+
+    def __is_at_left_border(self):
+        pos = [self.rect.centerx + self.image_size[0] / 2, self.rect.centerx + self.image_size[1] / 2]
+        if pos[0] - 25 < self.border_top_left[0]:
+            return True
+        return False
+
+    def __calculate_offset_based_on_speed(self):
+        self.offset = 800 / (config.speed * 120)
+
+    def update(self):
+        if self.is_outside:
+            self.__is_outside_right_border()
+        if self.__is_at_left_border():
+            self.kill()
+        self.rect = self.rect.move(-self.offset, 0)

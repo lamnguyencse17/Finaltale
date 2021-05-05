@@ -19,6 +19,7 @@ class Controller:
         self.__last_sprite: bone.Bone = None
         self.game_loaded = False
         self.__is_at_option_menu = False
+        self.__allow_new_cloud = True
 
     def set_last_sprite(self, sprite: pg.sprite.Sprite):
         self.__last_sprite = sprite
@@ -79,6 +80,15 @@ class Controller:
 
     def is_at_option_menu(self):
         return self.__is_at_option_menu
+
+    def allow_new_cloud(self):
+        self.__allow_new_cloud = True
+
+    def block_new_cloud(self):
+        self.__allow_new_cloud = False
+
+    def is_new_cloud_allowed(self):
+        return self.__allow_new_cloud
 
 
 game_controller: Controller = None

@@ -1,9 +1,9 @@
 from typing import Tuple
 
-import heart
 import main_menu
 import music
 import title
+from sprites import heart
 from sprites_group import misc_group, gameplay_group
 
 
