@@ -2,6 +2,7 @@ from typing import Tuple
 
 import pygame as pg
 
+import border
 import config
 import controller
 import generator
@@ -10,12 +11,13 @@ import music
 import option
 import pause_menu
 from event import event as event_store
+from loaders.load_attack_bar import load_attack_bar
 from loaders.load_game_over import load_game_over
 from loaders.load_in_game import load_in_game
 from loaders.load_main_menu import load_main_menu
 from loaders.load_option_menu import load_option_menu
 from spec import spec
-from sprites import bone, heart, game_over
+from sprites import bone, heart, game_over, attack_bar
 from sprites_group import obstacles_group, character_group, gameplay_group, misc_group, pause_menu_group
 
 BLACK = (0, 0, 0)
@@ -36,6 +38,8 @@ def prep_for_new_render():
         if len(obstacles_group.sprites()) == 0:
             pg.event.post(event_store.event["ATTACK_SANS"]["object"])
             game_controller.block_render()
+            game_controller.block_new_item()
+            game_controller.block_new_cloud()
 
 
 def is_in_collision_list(bone_id):
@@ -64,7 +68,7 @@ def load_config(screen_center: Tuple[int, int]):
     heart_size = (int(heart.heart_image.get_width() * 0.1), int(heart.heart_image.get_height() * 0.1))
     config.set_heartsize(heart_size)
     config.set_screen_center(screen_center)
-    # music.mute_bgm()
+    music.mute_bgm()
 
 
 def map_event():
@@ -83,6 +87,9 @@ def map_event():
 
 def key_handling(key: int):
     game_controller = controller.get_game_controller()
+    if key == pg.K_SPACE and game_controller.is_attacking():
+        attack_bar_sprite: attack_bar.Bar = misc_group.sprites()[0]
+        attack_bar_sprite.damage_check()
     if key == pg.K_ESCAPE:
         if game_controller.is_paused():
             game_controller.unpause_game()
@@ -166,6 +173,9 @@ def main():
             if event.type == event_store.event["IN_GAME"]["value"]:
                 load_in_game(screen_center)
             if event.type == event_store.event["LOAD_BONE"]["value"]:
+                if spec.specs_index != 0:
+                    border_sprite = border.Border(screen_center)
+                    misc_group.add(border_sprite)
                 generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
             if event.type == event_store.event["OPTION_MENU"]["value"]:
                 load_option_menu()
@@ -177,7 +187,9 @@ def main():
                 game_controller.display_game_over()
                 load_game_over(screen_center, screen)
             if event.type == event_store.event["ATTACK_SANS"]["value"]:
-                print("ATTACK")
+                game_controller.toggle_attack()
+                load_attack_bar(screen_center)
+                misc_group.draw(screen)
         if game_controller.is_at_game_over():
             misc_group.draw(screen)
             spec.reset_spec_index()

@@ -22,6 +22,20 @@ class Controller:
         self.__allow_new_cloud = True
         self.__allow_new_item = True
         self.__is_at_game_over = False
+        self.__is_attacking = False
+        self.__sans_hp = 1000
+
+    def handle_attack(self, damage):
+        self.__sans_hp -= damage
+
+    def get_sans_hp(self):
+        return self.__sans_hp
+
+    def toggle_attack(self):
+        self.__is_attacking = not self.__is_attacking
+
+    def is_attacking(self):
+        return self.__is_attacking
 
     def set_last_sprite(self, sprite: pg.sprite.Sprite):
         self.__last_sprite = sprite

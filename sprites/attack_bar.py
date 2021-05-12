@@ -3,6 +3,9 @@ import random
 import pygame as pg
 
 import config
+import controller
+from event import event as event_store
+from spec import spec
 
 
 def _generate_health_color(current_health):
@@ -35,10 +38,30 @@ class Bar(pg.sprite.Sprite):
         pg.draw.rect(self.health_bar_surface, (255, 0, 0), (395, 5, 200, 50))
 
         pg.draw.rect(self.health_bar_surface, (0, 0, 255), (self.bar_posx, 5, 10, 50))
-        self.image.blit(self.health_bar_surface, (center[0] - 405, center[1] - 305))
+        self.image.blit(self.health_bar_surface, (center[0] - 300, center[1] + 100))
+
+    def damage_check(self):
+        game_controller = controller.get_game_controller()
+        damage = 0
+        if self.bar_posx <= 200 or self.bar_posx >= 395:
+            damage = 20
+        elif self.bar_posx <= 280 or self.bar_posx >= 330:
+            damage = 50
+        elif self.bar_posx < 330 or self.bar_posx > 280:
+            damage = 100
+        game_controller.handle_attack(damage)
+        self.kill_bar()
+
+    def kill_bar(self):
+        game_controller = controller.get_game_controller()
+        game_controller.toggle_attack()
+        spec.increment_spec_index()
+        pg.event.post(event_store.event["LOAD_BONE"]["object"])
+        self.kill()
 
     def update(self):
         if self.bar_posx + 2 * self.speed > 600:
-            self.kill()
+            print("NO DAMAGE")
+            self.kill_bar()
         self.bar_posx += 2 * self.speed
         self.__render_attack_bar()

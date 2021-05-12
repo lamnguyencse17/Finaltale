@@ -7,6 +7,7 @@ import music
 import sans
 from spec import spec
 from sprites import health_bar
+from sprites import sans_health_bar
 from sprites_group import character_group, misc_group, gameplay_group
 
 
@@ -19,11 +20,13 @@ def load_in_game(screen_center: Tuple[int, int]):
     sans_sprite = sans.Sans((screen_center[0], screen_center[1] - 100))
     border_sprite = border.Border(screen_center)
     health_bar_sprite = health_bar.Bar()
+    sans_health_sprite = sans_health_bar.Bar()
     generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
 
     character_group.add(sans_sprite)
     misc_group.add(border_sprite)
     gameplay_group.add(health_bar_sprite)
+    gameplay_group.add(sans_health_sprite)
 
     gameplay_group.update()
     character_group.update()
