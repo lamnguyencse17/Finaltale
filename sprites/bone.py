@@ -44,7 +44,7 @@ class Bone(pg.sprite.Sprite):
         if is_collided:
             self.collided = True
 
-    def __is_at_left_border(self):
+    def is_at_left_border(self):
         pos = [self.rect.centerx + self.image_size[0] / 2, self.rect.centerx + self.image_size[1] / 2]
         if pos[0] - 25 < self.border_top_left[0]:
             return True
@@ -63,6 +63,6 @@ class Bone(pg.sprite.Sprite):
         if self.is_outside:
             self.__is_outside_right_border()
         self.__check_collision()
-        if self.__is_at_left_border():
+        if self.is_at_left_border():
             self.kill()
         self.rect = self.rect.move(-self.offset, 0)

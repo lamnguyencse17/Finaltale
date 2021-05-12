@@ -10,11 +10,12 @@ import music
 import option
 import pause_menu
 from event import event as event_store
+from loaders.load_game_over import load_game_over
 from loaders.load_in_game import load_in_game
 from loaders.load_main_menu import load_main_menu
 from loaders.load_option_menu import load_option_menu
 from spec import spec
-from sprites import bone, heart
+from sprites import bone, heart, game_over
 from sprites_group import obstacles_group, character_group, gameplay_group, misc_group, pause_menu_group
 
 BLACK = (0, 0, 0)
@@ -28,8 +29,13 @@ def prep_for_new_render():
         return
     if last_sprite.is_outside:
         return
-    pg.time.set_timer(event_store.event["LOAD_BONE"]["object"], spec.current_specs["start_time"], True)
-    game_controller.block_render()
+    if spec.current_specs["type"] != "attack":
+        pg.time.set_timer(event_store.event["LOAD_BONE"]["object"], spec.current_specs["start_time"], True)
+        game_controller.block_render()
+    else:
+        if len(obstacles_group.sprites()) == 0:
+            pg.event.post(event_store.event["ATTACK_SANS"]["object"])
+            game_controller.block_render()
 
 
 def is_in_collision_list(bone_id):
@@ -58,6 +64,7 @@ def load_config(screen_center: Tuple[int, int]):
     heart_size = (int(heart.heart_image.get_width() * 0.1), int(heart.heart_image.get_height() * 0.1))
     config.set_heartsize(heart_size)
     config.set_screen_center(screen_center)
+    # music.mute_bgm()
 
 
 def map_event():
@@ -65,7 +72,7 @@ def map_event():
     event_store.define_event("MAIN_MENU")
     event_store.define_event("OPTION_MENU")
     event_store.define_event("IN_GAME")
-    event_store.define_event("END_GAME")
+    event_store.define_event("GAME_OVER")
     event_store.define_event("PAUSE")
     event_store.define_event("UNPAUSE")
     event_store.define_event("LOAD_BONE")
@@ -106,6 +113,11 @@ def click_handling():
             game_controller.quit()
         if main_menu_sprite.is_option_title_clicked():
             pg.event.post(event_store.event["OPTION_MENU"]["object"])
+    if game_controller.is_at_game_over():
+        game_over_sprite: game_over.Menu = misc_group.sprites()[0]
+        if game_over_sprite.is_clicked_on_back():
+            game_controller.display_main_menu()
+            load_main_menu(config.screen_center)
     if game_controller.is_at_option_menu():
         option_menu_sprite: option.Menu = misc_group.sprites()[0]
         if option_menu_sprite.is_clicked_on_bgm():
@@ -161,6 +173,15 @@ def main():
                 game_controller.allow_new_cloud()
             if event.type == event_store.event["ALLOW_NEW_ITEM"]["value"]:
                 game_controller.allow_new_item()
+            if event.type == event_store.event["GAME_OVER"]["value"]:
+                game_controller.display_game_over()
+                load_game_over(screen_center, screen)
+            if event.type == event_store.event["ATTACK_SANS"]["value"]:
+                print("ATTACK")
+        if game_controller.is_at_game_over():
+            misc_group.draw(screen)
+            spec.reset_spec_index()
+            game_controller.allow_render()
         if game_controller.is_at_main_menu() or game_controller.is_at_option_menu():
             misc_group.draw(screen)
             gameplay_group.draw(screen)
@@ -184,11 +205,10 @@ def main():
                 misc_group.update()
                 check_for_collision()
                 prep_for_new_render()
-                if spec.specs_index == spec.get_specs_length() - 1 and len(obstacles_group.sprites()) == 0:
-                    spec.reset_spec_index()
-                    game_controller.allow_render()
-                    generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
-
+                # if spec.specs_index == spec.get_specs_length() - 1 and len(obstacles_group.sprites()) == 0:
+                #     spec.reset_spec_index()
+                #     game_controller.allow_render()
+                #     generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
         pg.display.update()
         clock.tick(120)
 

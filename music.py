@@ -22,6 +22,14 @@ def play_ingame_music():
     pg.mixer.music.play()
 
 
+def play_game_over_music():
+    global current_bgm
+    print("CALLED")
+    pg.mixer.music.load("game_over.mp3")
+    pg.mixer.music.play()
+    current_bgm = "game_over_bgm"
+
+
 def toggle_bgm():
     if pg.mixer.music.get_volume() == float(0):
         pg.mixer.music.set_volume(float(1))

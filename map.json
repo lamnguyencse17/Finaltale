@@ -47,5 +47,8 @@
     "distance": 30,
     "heart_start_offset": 150,
     "heart_end_offset": 80
+  },
+  {
+    "type": "attack"
   }
 ]

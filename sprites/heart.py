@@ -30,7 +30,7 @@ class Heart(pg.sprite.Sprite):
     def __set_heart_position(self, pos_x, pos_y):
         game_controller = controller.get_game_controller()
         center_adjustment = [pos_x - self.image_size[0] / 2, pos_y - self.image_size[1] / 2]
-        if game_controller.is_at_main_menu() or game_controller.is_at_option_menu():
+        if game_controller.is_at_main_menu() or game_controller.is_at_option_menu() or game_controller.is_at_game_over():
             self.rect.x = center_adjustment[0]
             self.rect.y = center_adjustment[1]
             return
@@ -42,6 +42,7 @@ class Heart(pg.sprite.Sprite):
             center_adjustment[0] = self.border_top_left[0] + 4
         elif center_adjustment[0] + self.image_size[0] > self.border_top_left[0] + 800:
             center_adjustment[0] = self.border_top_left[0] + 800 - self.image_size[0] - 5
+
         self.rect.x = center_adjustment[0]
         self.rect.y = center_adjustment[1]
 
@@ -49,6 +50,17 @@ class Heart(pg.sprite.Sprite):
         (mouse_x, mouse_y) = pg.mouse.get_pos()
         if self.last_mouse_movement[0] != mouse_x or self.last_mouse_movement[1] != mouse_y:
             self.__set_heart_position(mouse_x, mouse_y)
+            game_controller = controller.get_game_controller()
+            if game_controller.is_in_game():
+                if mouse_x < 250:
+                    mouse_x = 250
+                elif mouse_x > 1025:
+                    mouse_x = 1025
+                if mouse_y < 465:
+                    mouse_y = 465
+                if mouse_y > 640:
+                    mouse_y = 640
+                pg.mouse.set_pos((mouse_x, mouse_y))
             self.last_mouse_movement[0] = mouse_x
             self.last_mouse_movement[1] = mouse_y
 

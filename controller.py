@@ -21,6 +21,7 @@ class Controller:
         self.__is_at_option_menu = False
         self.__allow_new_cloud = True
         self.__allow_new_item = True
+        self.__is_at_game_over = False
 
     def set_last_sprite(self, sprite: pg.sprite.Sprite):
         self.__last_sprite = sprite
@@ -59,15 +60,24 @@ class Controller:
         self.__is_at_main_menu = True
         self.__is_in_game = False
         self.__is_at_option_menu = False
+        self.__is_at_game_over = False
 
     def display_option_menu(self):
         self.__is_at_main_menu = False
         self.__is_at_option_menu = True
         self.__is_in_game = False
+        self.__is_at_game_over = False
 
     def display_game(self):
         self.__is_at_main_menu = False
         self.__is_in_game = True
+        self.__is_at_option_menu = False
+        self.__is_at_game_over = False
+
+    def display_game_over(self):
+        self.__is_at_game_over = True
+        self.__is_at_main_menu = False
+        self.__is_in_game = False
         self.__is_at_option_menu = False
 
     def unpause_game(self):
@@ -99,6 +109,9 @@ class Controller:
 
     def is_new_item_allowed(self):
         return self.__allow_new_item
+
+    def is_at_game_over(self):
+        return self.__is_at_game_over
 
 
 game_controller: Controller = None
