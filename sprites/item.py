@@ -4,16 +4,17 @@ import sys
 import pygame as pg
 
 import config
+import controller
 
 
-class Cloud(pg.sprite.Sprite):
+class Item(pg.sprite.Sprite):
 
     def __init__(self, pos):
         super().__init__()
         # game_controller = controller.getGameController()
         center = config.screen_center
-        self.image = pg.image.load('./res/image/cloud.png').convert_alpha()
-        self.image_size = (int(self.image.get_width() * 0.3), int(self.image.get_height() * 0.3))
+        self.image = pg.image.load('./res/image/item.png').convert_alpha()
+        self.image_size = (int(self.image.get_width() * 0.05), int(self.image.get_height() * 0.05))
         self.image = pg.transform.scale(self.image, self.image_size)
         self.is_outside = True
         self.true_image = self.image
@@ -36,16 +37,27 @@ class Cloud(pg.sprite.Sprite):
 
     def __is_at_left_border(self):
         pos = [self.rect.centerx + self.image_size[0] / 2, self.rect.centerx + self.image_size[1] / 2]
-        if pos[0] - 100 < self.border_top_left[0]:
+        if pos[0] - 25 < self.border_top_left[0]:
             return True
         return False
 
     def __calculate_offset_based_on_speed(self):
         self.offset = 800 / (config.speed * 120)
 
+    def __check_collision(self):
+        (mouse_x, mouse_y) = pg.mouse.get_pos()
+        is_collided = self.rect.collidepoint(mouse_x, mouse_y + self.heart_size[1] / 2)
+        if is_collided:
+            game_controller = controller.get_game_controller()
+            player = game_controller.get_player()
+            player.heal(20)
+            print("HEALED")
+            self.kill()
+
     def update(self):
         if self.is_outside:
             self.__is_outside_right_border()
         if self.__is_at_left_border():
             self.kill()
+        self.__check_collision()
         self.rect = self.rect.move(-self.offset, 0)

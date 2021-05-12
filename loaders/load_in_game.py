@@ -3,10 +3,10 @@ from typing import Tuple
 import border
 import controller
 import generator
-import health_bar
 import music
 import sans
 from spec import spec
+from sprites import health_bar
 from sprites_group import character_group, misc_group, gameplay_group
 
 

@@ -25,7 +25,6 @@ def prep_for_new_render():
     game_controller = controller.get_game_controller()
     last_sprite = game_controller.get_last_sprite()
     if not game_controller.allow_new_render:
-        pg.event.clear()
         return
     if last_sprite.is_outside:
         return
@@ -72,6 +71,7 @@ def map_event():
     event_store.define_event("LOAD_BONE")
     event_store.define_event("ATTACK_SANS")
     event_store.define_event("ALLOW_NEW_CLOUD")
+    event_store.define_event("ALLOW_NEW_ITEM")
 
 
 def key_handling(key: int):
@@ -159,6 +159,8 @@ def main():
                 load_option_menu()
             if event.type == event_store.event["ALLOW_NEW_CLOUD"]["value"]:
                 game_controller.allow_new_cloud()
+            if event.type == event_store.event["ALLOW_NEW_ITEM"]["value"]:
+                game_controller.allow_new_item()
         if game_controller.is_at_main_menu() or game_controller.is_at_option_menu():
             misc_group.draw(screen)
             gameplay_group.draw(screen)
@@ -171,6 +173,8 @@ def main():
                 misc_group.draw(screen)
                 if game_controller.is_new_cloud_allowed():
                     generator.gen_cloud()
+                if game_controller.is_new_item_allowed():
+                    generator.gen_item()
                 character_group.draw(screen)
                 obstacles_group.draw(screen)
                 gameplay_group.draw(screen)

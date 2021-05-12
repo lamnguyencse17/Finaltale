@@ -19,7 +19,7 @@ class Bar(pg.sprite.Sprite):
         self.last_health = 100
         self.image = pg.Surface((1280, 720), pg.SRCALPHA, 32)
         self.rect = self.image.get_rect(center=center)
-        self.font = pg.font.Font("undertale.ttf", 30)
+        self.font = pg.font.Font("./undertale.ttf", 30)
         self.health_bar_surface = pg.Surface((210, 60))
         self.__render_health_bar(1, 100)
 

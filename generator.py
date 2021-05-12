@@ -8,7 +8,7 @@ import controller
 import sprites_group
 from event import event as event_store
 from spec import spec
-from sprites import bone, cloud
+from sprites import bone, cloud, item
 from sprites_group import misc_group
 
 
@@ -24,6 +24,7 @@ def continuous_bone_generator(current_specs, total_sprite, start_pos):
         new_bone = bone.Bone(new_bone_start_pos, new_bone_scale)
         sprites_group.obstacles_group.add(new_bone)
         if i == total_sprite - 1:
+            sprites_group.obstacles_group.update()
             return new_bone
 
 
@@ -64,6 +65,7 @@ def double_bone_generator(current_specs, total_sprite, start_pos, obstacles_grou
         obstacles_group.add(lower_bone)
         obstacles_group.add(upper_bone)
         if i == total_sprite - 1:
+            obstacles_group.update()
             return lower_bone
 
 
@@ -92,8 +94,21 @@ def generate_sprites(start_pos: Tuple[int, int]):
 def gen_cloud():
     center = config.screen_center
     game_controller = controller.get_game_controller()
-    y_offset = random.randint(200, 300)
+    y_offset = random.randint(125, 280)
     cloud_sprite = cloud.Cloud((center[0] + 300, center[1] + y_offset))
     misc_group.add(cloud_sprite)
+    misc_group.update()
     game_controller.block_new_cloud()
-    pg.time.set_timer(event_store.event["ALLOW_NEW_CLOUD"]["object"], 3000, True)
+    pg.time.set_timer(event_store.event["ALLOW_NEW_CLOUD"]["object"], 1000, True)
+
+
+def gen_item():
+    center = config.screen_center
+    game_controller = controller.get_game_controller()
+    y_offset = random.randint(225, 285)
+    item_sprite = item.Item((center[0] + 300, center[1] + y_offset))
+    misc_group.add(item_sprite)
+    misc_group.update()
+    print("CALLING NEW ITEM")
+    game_controller.block_new_item()
+    pg.time.set_timer(event_store.event["ALLOW_NEW_ITEM"]["object"], 2000, True)
