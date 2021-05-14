@@ -1,7 +1,7 @@
 from typing import Tuple
 
 import pygame as pg
-
+from event import event as event_store
 import player
 from sprites import bone
 
@@ -23,9 +23,12 @@ class Controller:
         self.__allow_new_item = True
         self.__is_at_game_over = False
         self.__is_attacking = False
+        self.__is_at_end_game = False
         self.__sans_hp = 1000
 
     def handle_attack(self, damage):
+        if self.__sans_hp - damage <= 0:
+            pg.event.post(event_store.event["END_GAME"]["object"])
         self.__sans_hp -= damage
 
     def get_sans_hp(self):
@@ -75,24 +78,38 @@ class Controller:
         self.__is_in_game = False
         self.__is_at_option_menu = False
         self.__is_at_game_over = False
+        self.__is_at_end_game = False
 
     def display_option_menu(self):
         self.__is_at_main_menu = False
         self.__is_at_option_menu = True
         self.__is_in_game = False
         self.__is_at_game_over = False
+        self.__is_at_end_game = False
 
     def display_game(self):
         self.__is_at_main_menu = False
         self.__is_in_game = True
         self.__is_at_option_menu = False
         self.__is_at_game_over = False
+        self.__is_at_end_game = False
 
     def display_game_over(self):
         self.__is_at_game_over = True
         self.__is_at_main_menu = False
         self.__is_in_game = False
         self.__is_at_option_menu = False
+        self.__is_at_end_game = False
+
+    def display_end_game(self):
+        self.__is_at_end_game = True
+        self.__is_at_game_over = False
+        self.__is_at_main_menu = False
+        self.__is_in_game = False
+        self.__is_at_option_menu = False
+
+    def is_at_end_game(self):
+        return self.__is_at_end_game
 
     def unpause_game(self):
         self.__is_in_pause_state = False

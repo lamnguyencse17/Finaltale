@@ -56,6 +56,9 @@ class Bar(pg.sprite.Sprite):
         game_controller = controller.get_game_controller()
         game_controller.toggle_attack()
         spec.increment_spec_index()
+        game_controller.allow_new_cloud()
+        # game_controller.allow_new_render()
+        game_controller.allow_new_item()
         pg.event.post(event_store.event["LOAD_BONE"]["object"])
         self.kill()
 

@@ -77,5 +77,30 @@
     "distance": 30,
     "heart_start_offset": 150,
     "heart_end_offset": 80
+  },
+  {
+    "type": "continuous",
+    "start_time": 100,
+    "quantity": 20,
+    "start_scale_x": 0.1,
+    "start_scale_y": 0.2,
+    "end_scale_x": 0.1,
+    "end_scale_y": 0.2,
+    "offset_y": -25,
+    "distance": 30
+  },
+  {
+    "type": "attack"
+  },
+  {
+    "type": "continuous",
+    "start_time": 1000,
+    "quantity": 20,
+    "start_scale_x": 0.1,
+    "start_scale_y": 0.1,
+    "end_scale_x": 0.1,
+    "end_scale_y": 0.30,
+    "offset_y": -15,
+    "distance": 30
   }
 ]

@@ -68,7 +68,7 @@ def load_config(screen_center: Tuple[int, int]):
     heart_size = (int(heart.heart_image.get_width() * 0.1), int(heart.heart_image.get_height() * 0.1))
     config.set_heartsize(heart_size)
     config.set_screen_center(screen_center)
-    music.mute_bgm()
+    # music.mute_bgm()
 
 
 def map_event():
@@ -77,6 +77,7 @@ def map_event():
     event_store.define_event("OPTION_MENU")
     event_store.define_event("IN_GAME")
     event_store.define_event("GAME_OVER")
+    event_store.define_event("END_GAME")
     event_store.define_event("PAUSE")
     event_store.define_event("UNPAUSE")
     event_store.define_event("LOAD_BONE")
@@ -190,6 +191,8 @@ def main():
                 game_controller.toggle_attack()
                 load_attack_bar(screen_center)
                 misc_group.draw(screen)
+            if event.type == event_store.event["END_GAME"]["value"]:
+                game_controller.display_end_game()
         if game_controller.is_at_game_over():
             misc_group.draw(screen)
             spec.reset_spec_index()
@@ -217,10 +220,10 @@ def main():
                 misc_group.update()
                 check_for_collision()
                 prep_for_new_render()
-                # if spec.specs_index == spec.get_specs_length() - 1 and len(obstacles_group.sprites()) == 0:
-                #     spec.reset_spec_index()
-                #     game_controller.allow_render()
-                #     generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
+                if spec.specs_index == spec.get_specs_length() - 1 and len(obstacles_group.sprites()) == 0:
+                    spec.reset_spec_index()
+                    game_controller.allow_render()
+                    generator.generate_sprites((screen_center[0] + 400, screen_center[1] + 200))
         pg.display.update()
         clock.tick(120)
 
